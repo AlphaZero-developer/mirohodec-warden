@@ -1,0 +1,209 @@
+{{template "layout_start" .}}
+<section class="panel toolbar">
+  <input data-filter="[data-group-card]" placeholder="Поиск групп">
+  <span class="muted">Discussion auto-reply leaves the chat link once per channel comment topic.</span>
+</section>
+
+<section class="panel">
+  <h2>Добавить супергруппу</h2>
+  <form class="form-grid" method="post" action="/supergroups/add">
+    <label>Chat ID<input name="chat_id" placeholder="-1001234567890" required></label>
+    <label>Название<input name="title" placeholder="Название чата"></label>
+    <label>Тема психцентра<input name="rehab_topic_id" placeholder="0"></label>
+    <label>Spam без психцентра
+      <select name="spam_no_rehab_action">
+        <option value="mute_on_delete">mute on delete-worthy spam</option>
+        <option value="normal">normal thresholds</option>
+      </select>
+    </label>
+    <label>AI в группе
+      <select name="ai_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>Антиспам
+      <select name="spam_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>Warn
+      <select name="warn_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>Карма
+      <select name="karma_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>FAQ
+      <select name="faq_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>Цитаты
+      <select name="quotes_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>Фото
+      <select name="photos_enabled_mode">
+        <option value="">inherit</option>
+        <option value="on">on</option>
+        <option value="off">off</option>
+      </select>
+    </label>
+    <label>Warn expire<input name="warn_expire_after" placeholder="inherit"></label>
+    <label>Warn mute at<input name="warn_mute_threshold" inputmode="numeric" placeholder="inherit"></label>
+    <label>Warn mute duration<input name="warn_mute_duration" placeholder="inherit"></label>
+    <label>Warn psych at<input name="warn_rehab_threshold" inputmode="numeric" placeholder="inherit"></label>
+    <label>Warn psych duration<input name="warn_rehab_duration" placeholder="inherit"></label>
+    <label>Карма: сообщений за +1<input name="karma_messages_per_point" inputmode="numeric" placeholder="inherit"></label>
+    <label>Карма: дневной лимит<input name="karma_daily_limit" inputmode="numeric" placeholder="inherit"></label>
+    <label>Карма: cooldown<input name="karma_manual_cooldown" placeholder="inherit"></label>
+    <label class="check"><input type="checkbox" name="enabled" checked> включена</label>
+    <button type="submit">Добавить</button>
+  </form>
+</section>
+
+<section class="cards">
+  {{range .Groups}}
+  <article class="item-card searchable" data-group-card>
+    <header>
+      <div><h2>{{groupTitle .}}</h2><p>{{.ID}}</p></div>
+      <span class="badge {{if .Enabled}}ok{{else}}muted{{end}}">{{if .Enabled}}enabled{{else}}disabled{{end}}</span>
+    </header>
+    <form id="group-{{.ID}}" class="stack" method="post" action="/supergroups/update">
+      <input type="hidden" name="chat_id" value="{{.ID}}">
+      <label>Название<input name="title" value="{{.Title}}"></label>
+      <label>Тема психцентра<input name="rehab_topic_id" value="{{.RehabTopicID}}"></label>
+      <label>Spam без психцентра
+        <select name="spam_no_rehab_action">
+          <option value="mute_on_delete" {{if or (eq .SpamNoRehabAction "mute_on_delete") (eq .SpamNoRehabAction "")}}selected{{end}}>mute on delete-worthy spam</option>
+          <option value="normal" {{if eq .SpamNoRehabAction "normal"}}selected{{end}}>normal thresholds</option>
+        </select>
+      </label>
+      <details class="settings-panel">
+        <summary>Runtime-поведение группы</summary>
+        <div class="form-grid">
+          <label>AI в группе
+            <select name="ai_enabled_mode">
+              <option value="" {{if eq .AIEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .AIEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .AIEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>Антиспам
+            <select name="spam_enabled_mode">
+              <option value="" {{if eq .SpamEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .SpamEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .SpamEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>Warn
+            <select name="warn_enabled_mode">
+              <option value="" {{if eq .WarnEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .WarnEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .WarnEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>Карма
+            <select name="karma_enabled_mode">
+              <option value="" {{if eq .KarmaEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .KarmaEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .KarmaEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>FAQ
+            <select name="faq_enabled_mode">
+              <option value="" {{if eq .FAQEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .FAQEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .FAQEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>Цитаты
+            <select name="quotes_enabled_mode">
+              <option value="" {{if eq .QuotesEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .QuotesEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .QuotesEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>Фото
+            <select name="photos_enabled_mode">
+              <option value="" {{if eq .PhotosEnabledMode ""}}selected{{end}}>inherit</option>
+              <option value="on" {{if eq .PhotosEnabledMode "on"}}selected{{end}}>on</option>
+              <option value="off" {{if eq .PhotosEnabledMode "off"}}selected{{end}}>off</option>
+            </select>
+          </label>
+          <label>Warn expire<input name="warn_expire_after" value="{{.WarnExpireAfter}}" placeholder="inherit"></label>
+          <label>Warn mute at<input name="warn_mute_threshold" inputmode="numeric" value="{{optionalInt .WarnMuteThreshold}}" placeholder="inherit"></label>
+          <label>Warn mute duration<input name="warn_mute_duration" value="{{.WarnMuteDuration}}" placeholder="inherit"></label>
+          <label>Warn psych at<input name="warn_rehab_threshold" inputmode="numeric" value="{{optionalInt .WarnRehabThreshold}}" placeholder="inherit"></label>
+          <label>Warn psych duration<input name="warn_rehab_duration" value="{{.WarnRehabDuration}}" placeholder="inherit"></label>
+          <label>Карма: сообщений за +1<input name="karma_messages_per_point" inputmode="numeric" value="{{optionalInt .KarmaMessagesPerPoint}}" placeholder="inherit"></label>
+          <label>Карма: дневной лимит<input name="karma_daily_limit" inputmode="numeric" value="{{optionalInt .KarmaDailyLimit}}" placeholder="inherit"></label>
+          <label>Карма: cooldown<input name="karma_manual_cooldown" value="{{.KarmaManualCooldown}}" placeholder="inherit"></label>
+        </div>
+      </details>
+      <label class="check"><input type="checkbox" name="enabled" {{if .Enabled}}checked{{end}}> включена</label>
+    </form>
+    <div class="actions">
+      <button form="group-{{.ID}}" type="submit">Сохранить</button>
+      <form method="post" action="/supergroups/debug">
+        <input type="hidden" name="chat_id" value="{{.ID}}">
+        <input type="hidden" name="debug" value="{{if .DebugCommands}}false{{else}}true{{end}}">
+        <button type="submit" class="secondary">{{if .DebugCommands}}Release menu{{else}}Debug menu{{end}}</button>
+      </form>
+      <form method="post" action="/supergroups/delete" data-confirm="Удалить группу из панели?">
+        <input type="hidden" name="chat_id" value="{{.ID}}">
+        <button type="submit" class="danger">Удалить</button>
+      </form>
+    </div>
+    {{$chatID := .ID}}
+    <div class="chips">
+      <span>Known topics:</span>
+      {{if .KnownTopics}}
+      {{range .KnownTopics}}
+      <form method="post" action="/supergroups/rehab-topic">
+        <input type="hidden" name="chat_id" value="{{$chatID}}">
+        <input type="hidden" name="topic_id" value="{{.}}">
+        <button type="submit" class="chip">{{.}}</button>
+      </form>
+      {{end}}
+      {{else}}
+      <span class="muted">нет</span>
+      {{end}}
+    </div>
+    {{if .Settings}}
+    <details class="settings-panel">
+      <summary>Detailed chat settings</summary>
+      <div class="settings-grid">
+        {{range .Settings}}
+        <div class="settings-row">
+          <span class="settings-section">{{.Section}}</span>
+          <strong>{{.Name}}</strong>
+          <code>{{.Value}}</code>
+          {{if .Note}}<small>{{.Note}}</small>{{end}}
+        </div>
+        {{end}}
+      </div>
+    </details>
+    {{end}}
+  </article>
+  {{else}}
+  <p class="empty">Группы еще не найдены.</p>
+  {{end}}
+</section>
+{{template "layout_end" .}}

@@ -1,0 +1,1 @@
+UPDATE managed_chats SET persisted_rehab_topic_id=rehab_topic_id WHERE persisted_rehab_topic_id=0 AND rehab_topic_id<>0

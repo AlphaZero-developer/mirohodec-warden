@@ -1,0 +1,45 @@
+{{template "layout_start" .}}
+<section class="panel">
+  <div class="toolbar">
+    <form class="inline-form" method="get" action="/photos">
+      <input name="tag" value="{{.PhotoTag}}" placeholder="Фильтр по тегу">
+      <button type="submit" class="secondary">Фильтр</button>
+    </form>
+    <input data-filter="[data-photo-row]" placeholder="Поиск">
+  </div>
+  <form class="form-grid" method="post" action="/photos/add">
+    <label>Telegram file_id<input name="file_id" required></label>
+    <label>Unique ID<input name="unique_id"></label>
+    <label>Caption<input name="caption"></label>
+    <label>Теги<input name="tags" placeholder="tag1,tag2"></label>
+    <button type="submit">Добавить</button>
+  </form>
+</section>
+
+<section class="panel">
+  <table>
+    <thead><tr><th>ID</th><th>File</th><th>Caption</th><th>Теги</th><th>Добавил</th><th>Uses</th><th>Last used</th><th></th></tr></thead>
+    <tbody>
+      {{range .Photos}}
+      <tr data-photo-row class="searchable">
+        <td>{{.ID}}</td>
+        <td><code>{{.FileID}}</code>{{if .UniqueID}}<br><small>{{.UniqueID}}</small>{{end}}</td>
+        <td>{{.Caption}}</td>
+        <td>{{.TagsText}}</td>
+        <td>{{.AddedByName}}<br><small>{{.AddedAt}}</small></td>
+        <td>{{.Uses}}</td>
+        <td>{{.LastUsed}}</td>
+        <td>
+          <form method="post" action="/photos/delete" data-confirm="Удалить фото?">
+            <input type="hidden" name="id" value="{{.ID}}">
+            <button type="submit" class="danger">Удалить</button>
+          </form>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="8" class="empty">Фото не найдены.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+{{template "layout_end" .}}

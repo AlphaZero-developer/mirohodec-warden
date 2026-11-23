@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS karma_enabled_mode TEXT NOT NULL DEFAULT ''

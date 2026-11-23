@@ -1,0 +1,42 @@
+{{template "layout_start" .}}
+{{template "chat_selector" .}}
+<section class="panel">
+  <div class="table-head">
+    <h2>Активность</h2>
+    <input data-filter="[data-user-row]" placeholder="Поиск">
+  </div>
+  <table>
+    <thead><tr><th>ID</th><th>Имя</th><th>Роль</th><th>Всего</th><th>Сегодня</th><th>Карма</th><th>Тема</th><th>Последнее сообщение</th><th></th></tr></thead>
+    <tbody>
+      {{range .Users}}
+      <tr data-user-row class="searchable">
+        <td>{{.ID}}</td>
+        <td>{{.DisplayName}}{{if .Username}}<br><small>@{{.Username}}</small>{{end}}</td>
+        <td>{{if .Role}}<span class="badge info">{{.Role}}</span>{{else}}<span class="muted">-</span>{{end}}</td>
+        <td>{{.Messages}}</td>
+        <td>{{.MessagesToday}}</td>
+        <td>{{.Karma}}</td>
+        <td>{{.LastThreadID}}</td>
+        <td>{{.LastMessage}}</td>
+        <td>
+          {{if .CanBan}}
+          <form method="post" action="/moderation/ban" data-confirm="Добавить пользователя в вечный бан?">
+            <input type="hidden" name="chat_id" value="{{$.Chats.CurrentID}}">
+            <input type="hidden" name="user_id" value="{{.ID}}">
+            <input type="hidden" name="reason" value="web panel">
+            <button class="danger" type="submit">Вечный бан</button>
+          </form>
+          {{else if .Banned}}
+          <span class="badge error">уже в бане</span>
+          {{else}}
+          <span class="muted">защищён</span>
+          {{end}}
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="9" class="empty">Пользователи еще не известны.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+{{template "layout_end" .}}

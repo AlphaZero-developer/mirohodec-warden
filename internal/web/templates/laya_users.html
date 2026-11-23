@@ -1,0 +1,83 @@
+{{template "layout_start" .}}
+{{template "chat_selector" .}}
+
+<section class="panel">
+  <div class="hero-panel">
+    <div>
+      <h2>Прозвища, обращения и теги</h2>
+      <p class="muted">Создатель может вручную задать, как Лайя обращается к человеку, и повесить теги для её поведения.</p>
+    </div>
+  </div>
+  <form class="form-grid" method="post" action="/laya/users/update">
+    <input type="hidden" name="chat_id" value="{{.Chats.CurrentID}}">
+    <label>user_id
+      <input name="user_id" inputmode="numeric" required>
+    </label>
+    <label>username
+      <input name="username" placeholder="@username">
+    </label>
+    <label>Имя в панели
+      <input name="display_name" placeholder="как показать в списке">
+    </label>
+    <label>Пол
+      <select name="gender">
+        <option value="neutral">нейтральный</option>
+        <option value="male">мужской</option>
+        <option value="female">женский</option>
+      </select>
+    </label>
+    <label>Обращение
+      <input name="address" placeholder="ник или прозвище">
+    </label>
+    <label>Теги
+      <input name="tags" placeholder="художник, свой, шумный">
+    </label>
+    <label class="wide">Заметка для Лайи
+      <textarea name="note" rows="3" placeholder="Короткий контекст, который Лайя должна учитывать"></textarea>
+    </label>
+    <div class="actions wide">
+      <button type="submit">Сохранить профиль</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Пользователи и профили</h2>
+    <input data-filter="[data-laya-user-row]" placeholder="Поиск">
+  </div>
+  <table>
+    <thead><tr><th>Пользователь</th><th>Обращение</th><th>Теги</th><th>Заметка</th><th></th></tr></thead>
+    <tbody>
+      {{range .LayaUsers.Rows}}
+      <tr data-laya-user-row class="searchable">
+        <td>{{.DisplayName}}<br><small>{{.ID}}{{if .Username}} · @{{.Username}}{{end}}{{if .Updated}} · {{.Updated}}{{end}}</small></td>
+        <td>{{if .Address}}{{.Address}}{{else}}-{{end}}<br><small>{{if .Gender}}{{.Gender}}{{else}}neutral{{end}}</small></td>
+        <td>{{if .TagsText}}{{.TagsText}}{{else}}-{{end}}</td>
+        <td>{{if .Note}}{{.Note}}{{else}}-{{end}}</td>
+        <td>
+          <form class="stack" method="post" action="/laya/users/update">
+            <input type="hidden" name="chat_id" value="{{$.Chats.CurrentID}}">
+            <input type="hidden" name="user_id" value="{{.ID}}">
+            <input type="hidden" name="username" value="{{.Username}}">
+            <input type="hidden" name="display_name" value="{{.DisplayName}}">
+            <select name="gender">
+              <option value="neutral" {{if eq .Gender "neutral"}}selected{{end}}>нейтр.</option>
+              <option value="male" {{if eq .Gender "male"}}selected{{end}}>муж.</option>
+              <option value="female" {{if eq .Gender "female"}}selected{{end}}>жен.</option>
+            </select>
+            <input name="address" value="{{.Address}}" placeholder="обращение">
+            <input name="tags" value="{{.TagsText}}" placeholder="теги">
+            <textarea name="note" rows="2" placeholder="заметка">{{.Note}}</textarea>
+            <button type="submit">Сохранить</button>
+          </form>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="5" class="empty">Пользователей пока нет.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+
+{{template "layout_end" .}}

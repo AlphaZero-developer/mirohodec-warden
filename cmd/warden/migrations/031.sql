@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS karma_daily_limit INTEGER NOT NULL DEFAULT 0

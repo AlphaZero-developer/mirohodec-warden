@@ -1,0 +1,58 @@
+{{template "layout_start" .}}
+{{template "chat_selector" .}}
+<section class="panel">
+  <h2>Добавить в вечный бан</h2>
+  <form class="form-grid" method="post" action="/moderation/ban" data-confirm="Добавить пользователя в вечный бан?">
+    <input type="hidden" name="chat_id" value="{{.Chats.CurrentID}}">
+    <input type="hidden" name="return_to" value="moderation">
+    <label>Пользователь
+      <input name="user_id" list="known-users" placeholder="ID пользователя" required>
+    </label>
+    <label>Причина
+      <input name="reason" placeholder="web panel">
+    </label>
+    <button class="danger" type="submit">Вечный бан</button>
+  </form>
+  <datalist id="known-users">
+    {{range .Moderation.Users}}
+    <option value="{{.ID}}">{{.Label}}</option>
+    {{end}}
+  </datalist>
+</section>
+<section class="panel toolbar">
+  <input data-filter=".searchable" placeholder="Поиск по модерации">
+</section>
+<section class="stack">
+  <article class="panel">
+    <h2>Психиатрический центр</h2>
+    {{template "moderation_table" .Moderation.Jails}}
+  </article>
+  <article class="panel">
+    <h2>Mutes</h2>
+    {{template "moderation_table" .Moderation.Mutes}}
+  </article>
+  <article class="panel">
+    <h2>Forever bans</h2>
+    {{template "moderation_table" .Moderation.Bans}}
+  </article>
+</section>
+{{template "layout_end" .}}
+
+{{define "moderation_table"}}
+<table>
+  <thead><tr><th>Пользователь</th><th>Причина</th><th>Срок</th><th>Админ</th><th>С</th></tr></thead>
+  <tbody>
+    {{range .}}
+    <tr class="searchable">
+      <td>{{.DisplayName}}<br><small>{{.UserID}}</small></td>
+      <td>{{.Reason}}</td>
+      <td>{{.Until}}</td>
+      <td>{{.By}}</td>
+      <td>{{.Since}}</td>
+    </tr>
+    {{else}}
+    <tr><td colspan="5" class="empty">Нет активных записей.</td></tr>
+    {{end}}
+  </tbody>
+</table>
+{{end}}

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS bot_settings (
+			key TEXT PRIMARY KEY,
+			value JSONB NOT NULL DEFAULT '{}',
+			updated_unix BIGINT NOT NULL DEFAULT 0
+		)

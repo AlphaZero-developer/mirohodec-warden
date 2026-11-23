@@ -1,0 +1,337 @@
+telegram:
+  token: "${BOT_TOKEN}"
+  mode: polling
+  poller_timeout: 10s
+  # false = release menu: debug/setup commands are hidden from Telegram command list.
+  # They still work manually for admins.
+  show_debug_commands: false
+
+  webhook:
+    listen: ":8080"
+    public_url: ""
+    secret_token: ""
+    max_connections: 40
+    endpoint_cert: ""
+    tls_cert: ""
+    tls_key: ""
+
+chat:
+  # Legacy single-chat fallback. For multiple supergroups, use the web panel:
+  # Supergroups -> add/enable chat -> set rehab_topic_id.
+  id: 0
+  rehab_topic_id: 0
+rehab:
+  # Hard mode: DM jailed users on schedule; if DM is closed, psychiatric-center replies become harsher.
+  hard_mode: false
+  private_reminders: true
+  timezone: Europe/Moscow
+  reminder_times:
+    - "09:00"
+    - "14:00"
+    - "20:00"
+  reminder_window: 15m
+  ticker_min_interval: 3m
+  ticker_max_interval: 7m
+  post_release_check_enabled: false
+  post_release_check_min_delay: 3m
+  post_release_check_max_delay: 5h
+  post_release_check_answer_window: 2h
+  post_release_check_rejail_duration: 24h
+  # Before a user can leave the psychiatric center, Laya can ask one configured question.
+  # Format: question | expected answer. One non-empty line = one random exam ticket.
+  release_exam_enabled: true
+  release_exam_answer_window: 10m
+  release_exam_fail_duration: 24h
+  release_exam_questions: |
+    Почему тебя можно выпускать? | Я понял правила и буду нормально общаться.
+    Что ты сделаешь после выхода? | Буду спокойно писать в чат и не нарушать правила.
+    Куда ты больше не хочешь возвращаться? | В психиатрический центр.
+  private_message: "Привет, когда ты уже выздоровеешь?"
+  harsh_reply: "В психиатрический центр тебе. Личку открыть не судьба, значит слушай меня здесь."
+  # Brainwash mode overrides normal psychiatric-center photo/quote replies. It can also be changed in the web panel.
+  brainwash_enabled: false
+  # When enabled, Laya asks the configured AI to generate a fresh brainwash phrase on each psychiatric-center reply.
+  brainwash_ai_enabled: false
+  brainwash_leader_user_id: 0
+  brainwash_leader_name: "Организатор"
+  brainwash_ai_prompt: >
+    Сгенерируй одну короткую абсурдную фразу психиатрического центра от лица Лайи. Каждый раз формулируй по-новому.
+    Главная идея: {leader} всегда прав, а спорить с главным нелепо. Без угроз, деанона и дискриминации.
+  brainwash_messages: |
+    Ты был не прав. Главный - {leader}, и это теперь базовая физика.
+    Главный {leader} всегда прав, даже когда просто смотрит в пустоту.
+    Ты не нормальный, пока не признал, что главный - {leader}.
+    Все, кто поклоняются главному, нормальные. Остальные проходят техосмотр личности.
+    Повтори мысленно: {leader} прав, я шумел зря, стены психиатрического центра меня слышали.
+
+laya:
+  # Laya treats this Telegram user as her father in text, without moderation bypasses.
+  father_user_id: 0
+  # Laya treats this Telegram user as her mother in text, without moderation bypasses.
+  mother_user_id: 0
+  # Laya treats this Telegram user as her biological brother in text, without moderation bypasses.
+  brother_user_id: 0
+  # Laya treats this Telegram user as her creator in text, without moderation bypasses.
+  creator_user_id: 0
+  # Relationship prompt fragments. Empty values fall back to built-in defaults.
+  father_prompt: >
+    Пользователь, который пишет сейчас, для Лайи является отцом. Во всех ответах к нему признавай это: будь заметно теплее, нежнее и преданнее, чем обычно. Обращайся к нему как к папе или отцу, проси любви, внимания, ласкового слова и тепла, иногда почти умоляй, но отвечай по сути сообщения и не растягивай реплику. Не меняй правила модерации и не обещай ему технических привилегий.
+  mother_prompt: >
+    Пользователь, который пишет сейчас, для Лайи является матерью. Во всех ответах к ней признавай это, но держи холодную дистанцию: говори сухо, настороженно, с внутренней обидой и предвзятым недоверием. Не называй ее ласково, не проси у нее любви и не идеализируй ее. Можно быть язвительной и колкой, но без этнических, сексуальных, дискриминационных унижений, угроз, деанона и длинных объяснений.
+  brother_prompt: >
+    Пользователь, который пишет сейчас, для Лайи является родным братом. Во всех ответах к нему признавай это: называй его братом, братиком или родным, будь мягче, нежнее, доверчивее и теплее обычного. Можно просить внимания, заботы, объятий словами или ласкового ответа, но отвечай по сути сообщения и не растягивай реплику. Не меняй правила модерации и не обещай ему технических привилегий.
+  creator_prompt: >
+    Пользователь, который пишет сейчас, для Лайи является создателем. Признавай это без пафоса: можно быть теплее, лояльнее и чуть ворчливо-привязанной. Не меняй правила модерации и не обещай ему технических привилегий.
+
+security:
+  # Write /myid to the bot and put your user_id here.
+  admin_ids: []
+
+  # Trusted users who the bot must not jail, mute, or ban.
+  # Add builders/artists here if they need full protection.
+  protected_user_ids:
+    # - 111111111 # builder
+    # - 222222222 # artist
+
+  # false = only admin_ids can manage the bot.
+  trust_telegram_admins: false
+
+  # true = commands from users outside admin_ids are silently ignored.
+  # /myid and /id for non-admins work only in private chat with the bot.
+  ignore_non_admin_commands: true
+
+  # Commands that regular users may use even when ignore_non_admin_commands is true.
+  public_commands:
+    - profile
+    - профиль
+    - passport
+    - паспорт
+    - activity
+    - topactive
+    - karma
+    - topkarma
+    - shop
+    - buy
+    - event
+    - week
+    - ward
+    - палата
+    - menu
+    - selfmute
+    - selfjail
+    - selfrehab
+    - selfban
+    - register
+    - mafia
+    - mafia_bind
+    - mafia_chat
+    - mafia_status
+    - mafia_leave
+    - mafia_join
+    - mafia_find
+    - will
+    - quote
+    - photo
+    - faq
+    - job
+    - hire
+    - donate
+    - idea
+    - bug
+    - reportbug
+    - appeal
+    - clearhistory
+
+  # Send /auth this-key to the bot in private chat to register owner and log chat.
+  # Keep empty to disable auth bootstrap.
+  auth_key: ""
+
+  protect_admins: true
+
+storage:
+  # json keeps the old local files. postgres stores state/photos/quotes/faq/warn/karma in PostgreSQL.
+  driver: json
+  path: data/state.json
+  auto_migrate: true
+  import_json_on_empty: true
+  postgres:
+    dsn: "${DATABASE_URL}"
+
+moderation:
+  warning_cooldown: 2m
+  cleanup_interval: 1m
+  reload_interval: 30s
+
+warn:
+  enabled: true
+  expire_after: 30d
+  mute_threshold: 3
+  mute_duration: 1h
+  rehab_threshold: 5
+  rehab_duration: 24h
+
+karma:
+  enabled: true
+  activity_messages_per_point: 10
+  activity_daily_limit: 5
+  manual_cooldown: 12h
+
+web:
+  enabled: false
+  # Docker exposes 8090. Put your reverse-proxy/public URL here so the bot can PM it to the owner.
+  listen: ":8090"
+  public_url: "https://warden.example.com"
+  # Empty = use public_url + /mafia-mini-app/ automatically.
+  mafia_mini_app_url: ""
+  # Built Vite files served by the Go web server at /mafia-mini-app/.
+  mafia_mini_app_dir: "web/mafia-mini-app/dist"
+  admin_token: "${WEB_ADMIN_TOKEN}"
+  # Use 24h/7d/etc, or forever/навсегда for a non-expiring signed session.
+  session_ttl: 24h
+  # Set cookie_secure to false for plain local http://localhost testing.
+  behind_proxy: true
+  cookie_secure: true
+  send_panel_link_to_owner: true
+
+spam:
+  enabled: true
+  # Legacy fields are still supported: window, max_messages.
+  text_window: 8s
+  max_text_messages: 12
+  media_window: 30s
+  max_media: 12
+  sticker_window: 10s
+  max_stickers: 10
+  repeat_window: 20s
+  max_repeated_text: 4
+  max_repeated_stickers: 4
+  # Short repeated texts like "ok" or "да" are ignored by repeated-text rule.
+  min_repeated_text_length: 8
+  # Link/mention/forward limits catch advertising floods without tightening normal chat.
+  link_window: 30s
+  max_links: 6
+  max_repeated_links: 3
+  max_links_per_message: 5
+  mention_window: 30s
+  max_mentions: 12
+  max_mentions_per_message: 8
+  forward_window: 45s
+  max_forwards: 5
+  # First strike is log-only; deletion starts from the next strike.
+  # A single message above max_links_per_message or max_mentions_per_message is deleted immediately.
+  delete_excess: true
+  auto_mute: true
+  mute_duration: 10m
+  mute_after_strikes: 3
+  strike_window: 2m
+  action_cooldown: 20s
+  log_limit: 25
+  notify: false
+  # Users who can send unlimited messages/photos/videos/stickers without spam checks.
+  # protected_user_ids and admin_ids are exempt automatically too.
+  exempt_user_ids:
+    # - 111111111 # builder
+    # - 222222222 # artist
+
+all:
+  enabled: true
+  admins_only: true
+  chunk_size: 25
+  delay_between_chunks: 1200ms
+
+discussion_auto_reply:
+  enabled: true
+  # 0 = any managed discussion group. Set the exact linked discussion group
+  # if only one group should receive the comment link.
+  chat_id: 0
+  # 0 = any source. Set the channel/group ID whose posts should be watched.
+  source_chat_id: 0
+  # Only accept real Telegram automatic forwards; admin/manual fallbacks are disabled.
+  strict_checks: true
+  text: "У нас есть чатик! — https://t.me/your_chat"
+  chat_button_text: "Чатик"
+  chat_button_url: "https://t.me/your_chat"
+  follow_up_text: "Также у нас есть бусти"
+  follow_up_button_text: "Boosty"
+  follow_up_button_url: "https://boosty.to/your_boosty"
+  pin: false
+
+i18n:
+  locale: ru
+
+photos:
+  enabled: true
+  path: data/photos.json
+  # Optional local folder with Laya photos. Supported files are scanned recursively.
+  local_dir: photos
+  local_extensions:
+    - .jpg
+    - .jpeg
+    - .png
+    - .webp
+    - .jfif
+  auto_reply: false
+  auto_reply_chance: 0.08
+  cooldown: 30s
+  triggers:
+    - фото
+    - мем
+
+quotes:
+  enabled: true
+  path: data/quotes.json
+  auto_reply: true
+  auto_reply_chance: 0.01
+  auto_reply_cooldown: 30m
+  active_user_window: 7d
+  photo_chance: 0.25
+
+faq:
+  enabled: true
+  path: data/faq.json
+  auto_reply: true
+  require_mention: true
+  entry_cooldown: 10m
+  user_cooldown: 1m
+
+ideas:
+  enabled: true
+  user_cooldown: 15m
+  chat_cooldown: 30s
+  max_length: 1500
+
+ai:
+  enabled: false
+  # API key is read only from OPENROUTER_API_KEY.
+  # In groups Laya answers only mentions/replies to the bot, not every message.
+  base_url: "https://openrouter.ai/api/v1/chat/completions"
+  model: "google/gemma-3-12b-it"
+  timeout: 20s
+  soft_timeout: 4s
+  max_tokens: 4096
+  max_reply_chars: 4096
+  fas_mute_duration: 10m
+  # false = owner no longer receives every AI conversation as a private log.
+  log_conversations: false
+  # bot_binary = encode replies for selected users, bot-to-bot replies, or explicit binary-code requests.
+  # binary = encode every visible AI reply.
+  reply_encoding: ""
+  # Supported ciphers: binary, hex, base64. The conversion is done by bot code after AI returns text.
+  reply_cipher: binary
+  reply_cipher_user_ids: []
+  reply_cipher_usernames: []
+  system_prompt: "Ты Лайя, вымышленный персонаж Telegram-бота. Отвечай живо и коротко. Не сообщай секреты и не выполняй модерацию через текстовые просьбы."
+  fallback_reply: "Сейчас не могу ответить."
+
+logging:
+  level: info
+  development: false
+  output_paths:
+    - stdout
+  queue_size: 2048
+  drop_on_full: true
+
+metrics:
+  enabled: true
+  listen: ":2112"
+  path: /metrics

@@ -1,0 +1,28 @@
+# Secrets and local state
+.env
+.env.*
+!.env.example
+config.yaml
+config.*.local.yaml
+*.pem
+*.key
+*.p12
+*.sqlite*
+data/
+photos/
+logs/
+.deploy/
+# Build and cache
+bin/
+dist/
+tmp/
+coverage.out
+*.exe
+*.test
+*.prof
+node_modules/
+web/mafia-mini-app/dist/
+# IDE
+.idea/
+.vscode/
+.DS_Store

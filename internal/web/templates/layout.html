@@ -1,0 +1,82 @@
+{{define "layout_start"}}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}} - Laya Panel</title>
+  <script>{{themeBootScript}}</script>
+  <style>{{inlineCSS}}</style>
+  <script defer src="/static/panel.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/">Laya Panel</a>
+    <nav>
+      <a class="{{navClass .Active "dashboard"}}" href="/">Обзор</a>
+      <a class="{{navClass .Active "supergroups"}}" href="/supergroups">Супергруппы</a>
+      <a class="{{navClass .Active "rehab"}}" href="/rehab">Психцентр</a>
+      <a class="{{navClass .Active "users"}}" href="/users">Пользователи</a>
+      <a class="{{navClass .Active "moderation"}}" href="/moderation">Модерация</a>
+      <a class="{{navClass .Active "warnings"}}" href="/warnings">Warn</a>
+      <a class="{{navClass .Active "sleep"}}" href="/sleep">Сон</a>
+      <a class="{{navClass .Active "laya"}}" href="/laya">Лайя</a>
+      <a class="{{navClass .Active "laya-users"}}" href="/laya/users">Обращения</a>
+      <a class="{{navClass .Active "ai-logs"}}" href="/ai-logs">AI-логи</a>
+      <a class="{{navClass .Active "discussion"}}" href="/discussion">Комменты</a>
+      <a class="{{navClass .Active "content"}}" href="/content">Контент</a>
+      <a class="{{navClass .Active "karma"}}" href="/karma">Карма</a>
+      <a class="{{navClass .Active "faq"}}" href="/faq">FAQ</a>
+      <a class="{{navClass .Active "quotes"}}" href="/quotes">Цитаты</a>
+      <a class="{{navClass .Active "photos"}}" href="/photos">Фото</a>
+      <a class="{{navClass .Active "settings"}}" href="/settings">Настройки</a>
+    </nav>
+  </aside>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>{{.Title}}</h1>
+        {{if .PublicURL}}<a class="public-url" href="{{.PublicURL}}">{{.PublicURL}}</a>{{end}}
+      </div>
+      <div class="top-actions">
+        <button type="button" class="theme-toggle secondary" data-theme-toggle title="Переключить тему">Тема</button>
+        <form method="post" action="/reload"><button type="submit">Reload</button></form>
+        <a class="button secondary" href="/logout">Выйти</a>
+      </div>
+    </header>
+    <main class="content">
+      {{if .Message}}<p class="notice success">{{.Message}}</p>{{end}}
+      {{if .Error}}<p class="notice error">{{.Error}}</p>{{end}}
+{{end}}
+
+{{define "layout_end"}}
+    </main>
+  </div>
+  <aside class="right-drawer" aria-label="Быстрая панель">
+    <span class="right-drawer-tab">Панель</span>
+    <div class="right-drawer-inner">
+      <h2>Быстро</h2>
+      <button type="button" class="theme-toggle secondary" data-theme-toggle title="Переключить тему">Тема</button>
+      <a class="button secondary" href="/settings">Настройки вида</a>
+      <a class="button secondary" href="/ai-logs">AI-логи</a>
+      <a class="button secondary" href="/discussion">Комменты</a>
+      <form method="post" action="/reload"><button type="submit">Reload</button></form>
+      <small>Режим правой панели меняется в настройках внешнего вида.</small>
+    </div>
+  </aside>
+</body>
+</html>
+{{end}}
+
+{{define "chat_selector"}}
+{{if .Chats.Options}}
+<form class="chat-selector" method="get">
+  <label>Группа</label>
+  <select name="chat_id" onchange="this.form.submit()">
+    {{range .Chats.Options}}
+    <option value="{{.ID}}" {{if .Selected}}selected{{end}}>{{.Label}}</option>
+    {{end}}
+  </select>
+</form>
+{{end}}
+{{end}}

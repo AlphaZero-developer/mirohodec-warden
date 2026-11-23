@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS faqs (
+			id TEXT PRIMARY KEY,
+			patterns TEXT[] NOT NULL DEFAULT '{}',
+			answer TEXT NOT NULL,
+			enabled BOOLEAN NOT NULL DEFAULT TRUE,
+			uses BIGINT NOT NULL DEFAULT 0,
+			last_used_unix BIGINT NOT NULL DEFAULT 0
+		)

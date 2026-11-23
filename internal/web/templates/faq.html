@@ -1,0 +1,40 @@
+{{template "layout_start" .}}
+<section class="panel">
+  <div class="toolbar">
+    <input data-filter="[data-faq-card]" placeholder="Поиск FAQ">
+    <button type="button" class="secondary" data-random="[data-faq-card]">Случайная</button>
+  </div>
+  <form class="stack editor" method="post" action="/faq/add" data-editor="faq">
+    <label>Паттерны<input name="patterns" placeholder="pattern1; pattern2"></label>
+    <label>Ответ<textarea name="answer" placeholder="Ответ"></textarea></label>
+    <div class="preview"></div>
+    <p class="dupe muted"></p>
+    <button type="submit">Добавить FAQ</button>
+  </form>
+</section>
+
+<section class="cards">
+  {{range .FAQs}}
+  <article class="item-card searchable" data-faq-card data-id="{{.ID}}" data-value="{{.PatternsText}}">
+    <header><div><h2>{{.ID}}</h2><p>uses {{.Uses}}</p></div></header>
+    <form id="faq-{{.ID}}" class="stack editor" method="post" action="/faq/update" data-editor="faq">
+      <input name="id" value="{{.ID}}" readonly>
+      <label>Паттерны<input name="patterns" value="{{.PatternsText}}"></label>
+      <label>Ответ<textarea name="answer">{{.Answer}}</textarea></label>
+      <label class="check"><input type="checkbox" name="enabled" {{if .Enabled}}checked{{end}}> включен</label>
+      <div class="preview">{{.Answer}}</div>
+      <p class="dupe muted"></p>
+    </form>
+    <div class="actions">
+      <button form="faq-{{.ID}}" type="submit">Сохранить</button>
+      <form method="post" action="/faq/delete" data-confirm="Удалить FAQ?">
+        <input type="hidden" name="id" value="{{.ID}}">
+        <button type="submit" class="danger">Удалить</button>
+      </form>
+    </div>
+  </article>
+  {{else}}
+  <p class="empty">FAQ пуст.</p>
+  {{end}}
+</section>
+{{template "layout_end" .}}

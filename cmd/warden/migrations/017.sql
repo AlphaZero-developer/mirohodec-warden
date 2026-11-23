@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS persisted_rehab_topic_id INTEGER NOT NULL DEFAULT 0

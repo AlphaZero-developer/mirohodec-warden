@@ -1,0 +1,54 @@
+{{template "layout_start" .}}
+<section class="panel hero-panel">
+  <div>
+    <h2>Сон создателя</h2>
+    <p class="muted">Кто спит, с какого времени и кто пытался дозваться. Здесь можно вручную снять режим сна, если команда в чате не дошла.</p>
+  </div>
+  <div class="toolbar">
+    <input data-filter="[data-sleep-owner]" placeholder="Поиск по журналу сна">
+    <a class="button secondary" href="/">На обзор</a>
+  </div>
+</section>
+
+{{range .OwnerSleep.Rows}}
+<section class="panel sleep-block searchable" data-sleep-owner>
+  <div class="table-head">
+    <div>
+      <h2>{{.DisplayName}}</h2>
+      <p class="muted">{{if .Username}}@{{.Username}} · {{end}}{{.UserID}} · спит с {{.Since}}</p>
+    </div>
+    <div class="actions">
+      <span class="badge {{if .CallCount}}warn{{else}}ok{{end}}">{{.CallCount}} зовов</span>
+      <button type="button" class="secondary" data-copy="{{.UserID}}">Copy ID</button>
+      <form method="post" action="/sleep/clear" data-confirm="Снять режим сна для этого создателя?">
+        <input type="hidden" name="user_id" value="{{.UserID}}">
+        <button type="submit" class="danger">Снять сон</button>
+      </form>
+    </div>
+  </div>
+  {{if .AliasesText}}<p class="chips"><span>Алиасы:</span><code>{{.AliasesText}}</code></p>{{end}}
+
+  <table>
+    <thead><tr><th>Время</th><th>Кто звал</th><th>Чат</th><th>Совпало</th><th>Сообщение</th></tr></thead>
+    <tbody>
+      {{range .Calls}}
+      <tr class="searchable">
+        <td>{{.At}}</td>
+        <td>{{.From}}<br><small>{{.FromID}}</small></td>
+        <td>{{.Chat}}<br><small>{{.ChatID}}{{if .ThreadID}} · topic {{.ThreadID}}{{end}}{{if .MessageID}} · msg {{.MessageID}}{{end}}</small></td>
+        <td>{{.Matched}}</td>
+        <td>{{.Text}}</td>
+      </tr>
+      {{else}}
+      <tr><td colspan="5" class="empty">Пока никто не звал.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+{{else}}
+<section class="panel empty-state">
+  <h2>Никто сейчас не спит</h2>
+  <p class="muted">Когда создатель напишет “я спать”, здесь появится активное состояние и журнал зовов.</p>
+</section>
+{{end}}
+{{template "layout_end" .}}

@@ -1,0 +1,27 @@
+{{template "layout_start" .}}
+{{template "chat_selector" .}}
+<section class="panel">
+  <div class="table-head">
+    <h2>Warnings</h2>
+    <input data-filter="[data-warning-row]" placeholder="Поиск">
+  </div>
+  <table>
+    <thead><tr><th>ID</th><th>Пользователь</th><th>Причина</th><th>Создан</th><th>Истекает</th><th>Админ</th><th>Статус</th></tr></thead>
+    <tbody>
+      {{range .Warnings}}
+      <tr data-warning-row class="searchable">
+        <td>{{.ID}}</td>
+        <td>{{.DisplayName}}<br><small>{{.UserID}}</small></td>
+        <td>{{.Reason}}</td>
+        <td>{{.Created}}</td>
+        <td>{{.Expires}}</td>
+        <td>{{.By}}</td>
+        <td>{{if .Active}}active{{else}}inactive{{end}}</td>
+      </tr>
+      {{else}}
+      <tr><td colspan="7" class="empty">Предупреждений нет.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+{{template "layout_end" .}}

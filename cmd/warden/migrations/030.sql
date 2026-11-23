@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS karma_messages_per_point INTEGER NOT NULL DEFAULT 0

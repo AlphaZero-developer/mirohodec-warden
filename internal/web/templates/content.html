@@ -1,0 +1,160 @@
+{{template "layout_start" .}}
+<section class="panel hero-panel">
+  <div>
+    <h2>Контент и автоответы</h2>
+    <p class="muted">Runtime-настройки для FAQ, цитат, фото и команд идей. Пустое поле наследует config.yaml, значение <code>-</code> очищает список там, где это указано.</p>
+  </div>
+  <div class="top-actions">
+    <a class="button secondary" href="/faq">FAQ</a>
+    <a class="button secondary" href="/quotes">Цитаты</a>
+    <a class="button secondary" href="/photos">Фото</a>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="hero-panel">
+    <div>
+      <h2>Поведение</h2>
+      {{if .Content.Updated}}<p class="muted">Последнее сохранение: {{.Content.Updated}}{{if .Content.UpdatedBy}} · {{.Content.UpdatedBy}}{{end}}</p>{{else}}<p class="muted">Сейчас используются значения из config.yaml и групповые переопределения.</p>{{end}}
+    </div>
+    <span class="badge {{if .Content.FAQ.ActiveEnabled}}ok{{else}}muted{{end}}">FAQ {{if .Content.FAQ.ActiveEnabled}}on{{else}}off{{end}}</span>
+    <span class="badge {{if .Content.Quotes.ActiveEnabled}}ok{{else}}muted{{end}}">quotes {{if .Content.Quotes.ActiveEnabled}}on{{else}}off{{end}}</span>
+    <span class="badge {{if .Content.Photos.ActiveEnabled}}ok{{else}}muted{{end}}">photos {{if .Content.Photos.ActiveEnabled}}on{{else}}off{{end}}</span>
+  </div>
+
+  <form class="editor" method="post" action="/content/update">
+    <h3>FAQ</h3>
+    <div class="form-grid">
+      <label>Включение
+        <select name="faq_enabled_mode">
+          <option value="" {{if eq .Content.FAQ.EnabledMode ""}}selected{{end}}>наследовать: {{if .Content.FAQ.ConfigEnabled}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.FAQ.EnabledMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.FAQ.EnabledMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Автоответ
+        <select name="faq_auto_reply_mode">
+          <option value="" {{if eq .Content.FAQ.AutoReplyMode ""}}selected{{end}}>наследовать: {{if .Content.FAQ.ConfigAutoReply}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.FAQ.AutoReplyMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.FAQ.AutoReplyMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Только при упоминании Лайи
+        <select name="faq_require_mention_mode">
+          <option value="" {{if eq .Content.FAQ.RequireMentionMode ""}}selected{{end}}>наследовать: {{if .Content.FAQ.ConfigRequireMention}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.FAQ.RequireMentionMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.FAQ.RequireMentionMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Кулдаун одной записи
+        <input name="faq_entry_cooldown" value="{{.Content.FAQ.EntryCooldown}}" placeholder="{{.Content.FAQ.ConfigEntryCooldown}}">
+      </label>
+      <label>Кулдаун пользователя
+        <input name="faq_user_cooldown" value="{{.Content.FAQ.UserCooldown}}" placeholder="{{.Content.FAQ.ConfigUserCooldown}}">
+      </label>
+    </div>
+
+    <h3>Цитаты</h3>
+    <div class="form-grid">
+      <label>Включение
+        <select name="quotes_enabled_mode">
+          <option value="" {{if eq .Content.Quotes.EnabledMode ""}}selected{{end}}>наследовать: {{if .Content.Quotes.ConfigEnabled}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.Quotes.EnabledMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.Quotes.EnabledMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Автоответ
+        <select name="quotes_auto_reply_mode">
+          <option value="" {{if eq .Content.Quotes.AutoReplyMode ""}}selected{{end}}>наследовать: {{if .Content.Quotes.ConfigAutoReply}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.Quotes.AutoReplyMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.Quotes.AutoReplyMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Шанс автоответа
+        <input name="quotes_auto_reply_chance" value="{{.Content.Quotes.AutoReplyChance}}" placeholder="{{.Content.Quotes.ConfigAutoReplyChance}}">
+      </label>
+      <label>Кулдаун автоцитаты
+        <input name="quotes_auto_reply_cooldown" value="{{.Content.Quotes.AutoReplyCooldown}}" placeholder="{{.Content.Quotes.ConfigAutoReplyCooldown}}">
+      </label>
+      <label>Окно активного пользователя
+        <input name="quotes_active_user_window" value="{{.Content.Quotes.ActiveUserWindow}}" placeholder="{{.Content.Quotes.ConfigActiveUserWindow}}">
+      </label>
+      <label>Шанс фото вместе с цитатой
+        <input name="quotes_photo_chance" value="{{.Content.Quotes.PhotoChance}}" placeholder="{{.Content.Quotes.ConfigPhotoChance}}">
+      </label>
+    </div>
+
+    <h3>Фото</h3>
+    <div class="form-grid">
+      <label>Включение
+        <select name="photos_enabled_mode">
+          <option value="" {{if eq .Content.Photos.EnabledMode ""}}selected{{end}}>наследовать: {{if .Content.Photos.ConfigEnabled}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.Photos.EnabledMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.Photos.EnabledMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Автоответ
+        <select name="photos_auto_reply_mode">
+          <option value="" {{if eq .Content.Photos.AutoReplyMode ""}}selected{{end}}>наследовать: {{if .Content.Photos.ConfigAutoReply}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.Photos.AutoReplyMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.Photos.AutoReplyMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Шанс автофото
+        <input name="photos_auto_reply_chance" value="{{.Content.Photos.AutoReplyChance}}" placeholder="{{.Content.Photos.ConfigAutoReplyChance}}">
+      </label>
+      <label>Кулдаун
+        <input name="photos_cooldown" value="{{.Content.Photos.Cooldown}}" placeholder="{{.Content.Photos.ConfigCooldown}}">
+      </label>
+      <label>Папка локальных фото
+        <input name="photos_local_dir" value="{{.Content.Photos.LocalDir}}" placeholder="{{.Content.Photos.ConfigLocalDir}}">
+      </label>
+      <label>Расширения локальных фото
+        <input name="photos_local_extensions" value="{{.Content.Photos.LocalExtensions}}" placeholder="{{.Content.Photos.ConfigLocalExtensions}}">
+      </label>
+    </div>
+    <label>Триггеры автофото
+      <textarea name="photos_triggers" rows="4" placeholder="{{.Content.Photos.ConfigTriggers}}">{{.Content.Photos.Triggers}}</textarea>
+    </label>
+
+    <h3>Идеи, баги и апелляции</h3>
+    <div class="form-grid">
+      <label>Включение
+        <select name="ideas_enabled_mode">
+          <option value="" {{if eq .Content.Ideas.EnabledMode ""}}selected{{end}}>наследовать: {{if .Content.Ideas.ConfigEnabled}}on{{else}}off{{end}}</option>
+          <option value="on" {{if eq .Content.Ideas.EnabledMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Content.Ideas.EnabledMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Кулдаун пользователя
+        <input name="ideas_user_cooldown" value="{{.Content.Ideas.UserCooldown}}" placeholder="{{.Content.Ideas.ConfigUserCooldown}}">
+      </label>
+      <label>Кулдаун чата
+        <input name="ideas_chat_cooldown" value="{{.Content.Ideas.ChatCooldown}}" placeholder="{{.Content.Ideas.ConfigChatCooldown}}">
+      </label>
+      <label>Максимальная длина
+        <input name="ideas_max_length" inputmode="numeric" value="{{optionalInt .Content.Ideas.MaxLength}}" placeholder="{{.Content.Ideas.ConfigMaxLength}}">
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Сохранить</button>
+      <a class="button secondary" href="/content">Сбросить форму</a>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Активные значения</h2>
+  <div class="settings-grid">
+    {{range .Content.Rows}}
+    <div class="settings-row">
+      <span class="settings-section">{{.Section}}</span>
+      <strong>{{.Name}}</strong>
+      <code>{{.Value}}</code>
+      {{if .Note}}<small>{{.Note}}</small>{{end}}
+    </div>
+    {{end}}
+  </div>
+</section>
+{{template "layout_end" .}}

@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS spam_enabled_mode TEXT NOT NULL DEFAULT ''

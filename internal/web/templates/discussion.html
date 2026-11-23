@@ -1,0 +1,83 @@
+{{template "layout_start" .}}
+<section class="panel hero-panel">
+  <div>
+    <h2>Автоответ в комментариях</h2>
+    <p class="muted">Runtime-настройки хранятся в state и применяются поверх config.yaml.</p>
+  </div>
+  <div class="top-actions">
+    <form method="post" action="/reload"><button type="submit">Reload</button></form>
+    <a class="button secondary" href="/supergroups">Группы</a>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="hero-panel">
+    <div>
+      <h2>Настройки</h2>
+      {{if .Discussion.Updated}}<p class="muted">Последнее сохранение: {{.Discussion.Updated}}</p>{{else}}<p class="muted">Сейчас используются значения из config.yaml.</p>{{end}}
+    </div>
+    <span class="badge {{if .Discussion.Active.Enabled}}ok{{else}}muted{{end}}">{{if .Discussion.Active.Enabled}}enabled{{else}}disabled{{end}}</span>
+  </div>
+
+  <form class="editor" method="post" action="/discussion/update">
+    <h3>Область</h3>
+    <div class="form-grid">
+      <label>Чат обсуждений ID
+        <input name="chat_id" inputmode="numeric" value="{{.Discussion.Active.ChatID}}" placeholder="0 = любой управляемый чат">
+      </label>
+      <label>Основная группа/канал постов ID
+        <input name="source_chat_id" inputmode="numeric" value="{{.Discussion.Active.SourceChatID}}" placeholder="0 = любой источник">
+      </label>
+      <label class="check"><input type="checkbox" name="enabled" {{if .Discussion.Active.Enabled}}checked{{end}}> включить автоответ</label>
+      <label class="check"><input type="checkbox" name="strict_checks" {{if .Discussion.Active.StrictChecks}}checked{{end}}> строгая проверка</label>
+      <label class="check"><input type="checkbox" name="pin" {{if .Discussion.Active.Pin}}checked{{end}}> закреплять первое сообщение</label>
+    </div>
+
+    <h3>Сообщения</h3>
+    <label>Первое сообщение
+      <textarea name="text" rows="4" required>{{.Discussion.Active.Text}}</textarea>
+    </label>
+    <h3>Кнопка первого сообщения</h3>
+    <div class="form-grid">
+      <label>Текст кнопки
+        <input name="chat_button_text" value="{{.Discussion.Active.ChatButtonText}}">
+      </label>
+      <label>URL кнопки
+        <input name="chat_button_url" value="{{.Discussion.Active.ChatButtonURL}}" placeholder="https://">
+      </label>
+    </div>
+    <label>Доп. сообщение
+      <textarea name="follow_up_text" rows="3">{{.Discussion.Active.FollowUpText}}</textarea>
+    </label>
+
+    <h3>Кнопка доп. сообщения</h3>
+    <div class="form-grid">
+      <label>Текст кнопки
+        <input name="follow_up_button_text" value="{{.Discussion.Active.FollowUpButtonText}}">
+      </label>
+      <label>URL кнопки
+        <input name="follow_up_button_url" value="{{.Discussion.Active.FollowUpButtonURL}}" placeholder="https://">
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Сохранить</button>
+      <a class="button secondary" href="/discussion">Сбросить форму</a>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Активные значения</h2>
+  <div class="settings-grid">
+    {{range .Discussion.Rows}}
+    <div class="settings-row">
+      <span class="settings-section">{{.Section}}</span>
+      <strong>{{.Name}}</strong>
+      <code>{{.Value}}</code>
+      {{if .Note}}<small>{{.Note}}</small>{{end}}
+    </div>
+    {{end}}
+  </div>
+</section>
+{{template "layout_end" .}}

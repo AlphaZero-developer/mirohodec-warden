@@ -1,0 +1,15 @@
+{{template "layout_start" .}}
+<section class="stats-grid">
+  <article><span>Бот</span><strong>{{if .Dashboard.BotName}}{{.Dashboard.BotName}}{{else}}unknown{{end}}</strong></article>
+  <article><span>Состояние</span><strong>{{if .Dashboard.State}}{{.Dashboard.State}}{{else}}running{{end}}</strong></article>
+  <article><span>Режим</span><strong>{{.Dashboard.Mode}}</strong></article>
+  <article><span>Known users</span><strong>{{.Dashboard.KnownUsers}}</strong></article>
+  <article><span>Психцентр</span><strong>{{.Dashboard.ActiveJailed}}</strong></article>
+  <article><span>Mutes</span><strong>{{.Dashboard.ActiveMuted}}</strong></article>
+  <article><span>Forever bans</span><strong>{{.Dashboard.ForeverBans}}</strong></article>
+  <article><span>Сон создателя</span><strong>{{.Dashboard.SleepingOwners}}</strong></article>
+  <article><span>FAQ</span><strong>{{.Dashboard.FAQCount}}</strong></article>
+  <article><span>Цитаты</span><strong>{{.Dashboard.QuoteCount}}</strong></article>
+  <article><span>Фото</span><strong>{{.Dashboard.PhotoCount}}</strong></article>
+</section>
+{{template "layout_end" .}}

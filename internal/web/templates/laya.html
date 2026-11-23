@@ -1,0 +1,246 @@
+{{template "layout_start" .}}
+<section class="panel">
+  <div class="hero-panel">
+    <div>
+      <h2>Состояние и промпт</h2>
+      <p class="muted">Runtime-настройки хранятся в state и применяются поверх config.yaml.</p>
+    </div>
+    <form method="post" action="/laya/cache/clear">
+      <button type="submit" class="secondary">Очистить AI-кэш</button>
+    </form>
+  </div>
+
+  <form class="editor" method="post" action="/laya/update">
+    <label>System prompt override
+      <textarea name="system_prompt" rows="8" placeholder="Пусто = использовать prompt из config.yaml">{{.Laya.RuntimeSystemPrompt}}</textarea>
+    </label>
+    <label>Дополнительное состояние
+      <textarea name="extra_prompt" rows="5" placeholder="Например: Лайя устала, отвечает резче и короче.">{{.Laya.ExtraPrompt}}</textarea>
+    </label>
+    <label>Fallback reply
+      <input name="fallback_reply" value="{{.Laya.FallbackReply}}" placeholder="Пусто = fallback из config.yaml">
+    </label>
+    <h3>Поведение и реакции</h3>
+    <div class="form-grid">
+      <label>Настроение
+        <select name="mood_mode">
+          <option value="" {{if eq .Laya.MoodMode ""}}selected{{end}}>inherit/random</option>
+          <option value="random" {{if eq .Laya.MoodMode "random"}}selected{{end}}>random</option>
+          <option value="custom" {{if eq .Laya.MoodMode "custom"}}selected{{end}}>custom prompt</option>
+          <option value="off" {{if eq .Laya.MoodMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Прямые оскорбления
+        <select name="direct_insult_mode">
+          <option value="" {{if eq .Laya.DirectInsultMode ""}}selected{{end}}>inherit/AI</option>
+          <option value="ai" {{if eq .Laya.DirectInsultMode "ai"}}selected{{end}}>AI</option>
+          <option value="local" {{if eq .Laya.DirectInsultMode "local"}}selected{{end}}>local only</option>
+          <option value="off" {{if eq .Laya.DirectInsultMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>Защитная пауза
+        <select name="safety_cooldown_mode">
+          <option value="" {{if eq .Laya.SafetyCooldownMode ""}}selected{{end}}>inherit/on</option>
+          <option value="on" {{if eq .Laya.SafetyCooldownMode "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Laya.SafetyCooldownMode "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+      <label>AI retry attempts
+        <input name="retry_attempts" inputmode="numeric" value="{{optionalInt .Laya.RetryAttempts}}" placeholder="1">
+      </label>
+      <label>AI retry backoff
+        <input name="retry_backoff" value="{{.Laya.RetryBackoff}}" placeholder="250ms">
+      </label>
+      <label>Fallback на прямое оскорбление
+        <input name="direct_insult_fallback" value="{{.Laya.DirectInsultFallback}}" placeholder="Пусто = случайная локальная реплика">
+      </label>
+    </div>
+    <label>Custom mood prompt
+      <textarea name="mood_prompt" rows="4" placeholder="Используется при режиме custom prompt">{{.Laya.MoodPrompt}}</textarea>
+    </label>
+    <label>Prompt для прямых оскорблений
+      <textarea name="direct_insult_prompt" rows="4" placeholder="Пусто = встроенный prompt">{{.Laya.DirectInsultPrompt}}</textarea>
+    </label>
+    <label>Текст защитной паузы
+      <input name="safety_pause_reply" value="{{.Laya.SafetyPauseReply}}" placeholder="Можно {remaining} и {reason}">
+    </label>
+    <label>Правила реакций на теги пользователей
+      <textarea name="tag_reaction_rules" rows="5" placeholder="Например: artist/художник: если достаёт Лайю, отправь рисовать.">{{.Laya.TagReactionRules}}</textarea>
+    </label>
+    <h3>AI runtime override</h3>
+    <div class="form-grid">
+      <label>Model
+        <input name="model" value="{{.Laya.RuntimeModel}}" placeholder="{{.Laya.ConfigModel}}">
+      </label>
+      <label>Base URL
+        <input name="base_url" value="{{.Laya.RuntimeBaseURL}}" placeholder="{{.Laya.ConfigBaseURL}}">
+      </label>
+      <label>Timeout
+        <input name="timeout" value="{{.Laya.RuntimeTimeout}}" placeholder="{{.Laya.ConfigTimeout}}">
+      </label>
+      <label>Soft timeout
+        <input name="soft_timeout" value="{{.Laya.RuntimeSoftTimeout}}" placeholder="{{.Laya.ConfigSoftTimeout}}">
+      </label>
+      <label>Max tokens
+        <input name="max_tokens" inputmode="numeric" value="{{optionalInt .Laya.RuntimeMaxTokens}}" placeholder="{{.Laya.ConfigMaxTokens}}">
+      </label>
+      <label>Max reply chars
+        <input name="max_reply_chars" inputmode="numeric" value="{{optionalInt .Laya.RuntimeMaxReplyChars}}" placeholder="{{.Laya.ConfigMaxReplyChars}}">
+      </label>
+      <label>Fas mute duration
+        <input name="fas_mute_duration" value="{{.Laya.RuntimeFasMute}}" placeholder="{{.Laya.ConfigFasMute}}">
+      </label>
+      <label>Log conversations
+        <select name="log_conversations">
+          <option value="" {{if eq .Laya.RuntimeLogConversations ""}}selected{{end}}>inherit ({{if .Laya.ConfigLogConversations}}on{{else}}off{{end}})</option>
+          <option value="on" {{if eq .Laya.RuntimeLogConversations "on"}}selected{{end}}>on</option>
+          <option value="off" {{if eq .Laya.RuntimeLogConversations "off"}}selected{{end}}>off</option>
+        </select>
+      </label>
+    </div>
+    <h3>Relationship IDs</h3>
+    <div class="form-grid">
+      <label>Father user_id
+        <input name="father_user_id" inputmode="numeric" value="{{optionalInt64 .Laya.RuntimeFatherUserID}}" placeholder="{{.Laya.ConfigFatherUserID}}">
+      </label>
+      <label>Mother user_id
+        <input name="mother_user_id" inputmode="numeric" value="{{optionalInt64 .Laya.RuntimeMotherUserID}}" placeholder="{{.Laya.ConfigMotherUserID}}">
+      </label>
+      <label>Brother user_id
+        <input name="brother_user_id" inputmode="numeric" value="{{optionalInt64 .Laya.RuntimeBrotherUserID}}" placeholder="{{.Laya.ConfigBrotherUserID}}">
+      </label>
+      <label>Creator user_id
+        <input name="creator_user_id" inputmode="numeric" value="{{optionalInt64 .Laya.RuntimeCreatorUserID}}" placeholder="{{.Laya.ConfigCreatorUserID}}">
+      </label>
+    </div>
+    <h3>Семейные prompt override</h3>
+    <label>Отец
+      <textarea name="father_prompt" rows="5" placeholder="Пусто = father_prompt из config.yaml">{{.Laya.RuntimeFatherPrompt}}</textarea>
+    </label>
+    <label>Мать
+      <textarea name="mother_prompt" rows="5" placeholder="Пусто = mother_prompt из config.yaml">{{.Laya.RuntimeMotherPrompt}}</textarea>
+    </label>
+    <label>Родной брат
+      <textarea name="brother_prompt" rows="5" placeholder="Пусто = brother_prompt из config.yaml">{{.Laya.RuntimeBrotherPrompt}}</textarea>
+    </label>
+    <label>Создатель
+      <textarea name="creator_prompt" rows="5" placeholder="Пусто = creator_prompt из config.yaml">{{.Laya.RuntimeCreatorPrompt}}</textarea>
+    </label>
+    <h3>Произвольные связи</h3>
+    <label>Связи из web-панели
+      <textarea name="relationships" rows="8" placeholder="123456789 | парень сестры | Пользователь для Лайи является парнем сестры. Учитывай это в тоне.">{{.Laya.RuntimeRelationships}}</textarea>
+    </label>
+    <div class="actions">
+      <button type="submit">Сохранить</button>
+      <a class="button secondary" href="/laya">Сбросить форму</a>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Ответить за Лайю</h2>
+  </div>
+  <form class="form-grid" method="post" action="/laya/say">
+    <label>chat_id
+      <input name="chat_id" inputmode="numeric" placeholder="-100...">
+    </label>
+    <label>topic/thread_id
+      <input name="thread_id" inputmode="numeric" placeholder="0 = основной чат">
+    </label>
+    <label>reply_to message_id
+      <input name="reply_to_message_id" inputmode="numeric" placeholder="необязательно">
+    </label>
+    <label class="wide">Текст Лайи
+      <textarea name="text" rows="4" placeholder="Сообщение будет отправлено от имени бота"></textarea>
+    </label>
+    <div class="actions wide">
+      <button type="submit">Отправить</button>
+    </div>
+  </form>
+</section>
+
+<section class="stats-grid">
+  <article><span>System prompts cache</span><strong>{{.Laya.Cache.SystemPrompts}}</strong></article>
+  <article><span>Active model</span><strong>{{.Laya.ActiveModel}}</strong></article>
+  <article><span>Active timeout</span><strong>{{.Laya.ActiveSoftTimeout}} / {{.Laya.ActiveTimeout}}</strong></article>
+  <article><span>Reply limit</span><strong>{{.Laya.ActiveMaxReplyChars}}</strong></article>
+  <article><span>Logs</span><strong>{{if .Laya.ActiveLogConversations}}on{{else}}off{{end}}</strong></article>
+  <article><span>Father ID</span><strong>{{.Laya.ActiveFatherUserID}}</strong></article>
+  <article><span>Mother ID</span><strong>{{.Laya.ActiveMotherUserID}}</strong></article>
+  <article><span>Brother ID</span><strong>{{.Laya.ActiveBrotherUserID}}</strong></article>
+  <article><span>Creator ID</span><strong>{{.Laya.ActiveCreatorUserID}}</strong></article>
+  <article><span>Обновлено</span><strong>{{if .Laya.Updated}}{{.Laya.Updated}}{{else}}-{{end}}</strong></article>
+  <article><span>Кем</span><strong>{{if .Laya.UpdatedBy}}{{.Laya.UpdatedBy}}{{else}}-{{end}}</strong></article>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Активные AI-настройки</h2>
+  </div>
+  <div class="settings-grid">
+    <div class="settings-row"><span class="settings-section">AI</span><strong>base_url</strong><code>{{.Laya.ActiveBaseURL}}</code><small>config: {{.Laya.ConfigBaseURL}}</small></div>
+    <div class="settings-row"><span class="settings-section">AI</span><strong>model</strong><code>{{.Laya.ActiveModel}}</code><small>config: {{.Laya.ConfigModel}}</small></div>
+    <div class="settings-row"><span class="settings-section">AI</span><strong>timeouts</strong><code>{{.Laya.ActiveSoftTimeout}} / {{.Laya.ActiveTimeout}}</code><small>config: {{.Laya.ConfigSoftTimeout}} / {{.Laya.ConfigTimeout}}</small></div>
+    <div class="settings-row"><span class="settings-section">AI</span><strong>limits</strong><code>{{.Laya.ActiveMaxTokens}} tokens, {{.Laya.ActiveMaxReplyChars}} chars</code><small>config: {{.Laya.ConfigMaxTokens}} tokens, {{.Laya.ConfigMaxReplyChars}} chars</small></div>
+    <div class="settings-row"><span class="settings-section">AI</span><strong>fas mute</strong><code>{{.Laya.ActiveFasMute}}</code><small>config: {{.Laya.ConfigFasMute}}</small></div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Активный prompt</h2>
+  </div>
+  <pre class="prompt-preview">{{.Laya.ActiveSystemPrompt}}</pre>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Активные семейные prompt</h2>
+  </div>
+  <h3>Отец</h3>
+  <pre class="prompt-preview">{{.Laya.ActiveFatherPrompt}}</pre>
+  <h3>Мать</h3>
+  <pre class="prompt-preview">{{.Laya.ActiveMotherPrompt}}</pre>
+  <h3>Родной брат</h3>
+  <pre class="prompt-preview">{{.Laya.ActiveBrotherPrompt}}</pre>
+  <h3>Создатель</h3>
+  <pre class="prompt-preview">{{.Laya.ActiveCreatorPrompt}}</pre>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Активные произвольные связи</h2>
+  </div>
+  {{if .Laya.ActiveRelationships}}
+  <div class="settings-grid">
+    {{range .Laya.ActiveRelationships}}
+    <div class="settings-row"><span class="settings-section">user_id {{.UserID}}</span><strong>{{.Role}}</strong><code>{{if .Prompt}}{{.Prompt}}{{else}}prompt по роли{{end}}</code></div>
+    {{end}}
+  </div>
+  {{else}}
+  <p class="muted">Пока не добавлены.</p>
+  {{end}}
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Prompt из config.yaml</h2>
+  </div>
+  <pre class="prompt-preview">{{.Laya.ConfigSystemPrompt}}</pre>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>Семейные prompt из config.yaml</h2>
+  </div>
+  <h3>Отец</h3>
+  <pre class="prompt-preview">{{.Laya.ConfigFatherPrompt}}</pre>
+  <h3>Мать</h3>
+  <pre class="prompt-preview">{{.Laya.ConfigMotherPrompt}}</pre>
+  <h3>Родной брат</h3>
+  <pre class="prompt-preview">{{.Laya.ConfigBrotherPrompt}}</pre>
+  <h3>Создатель</h3>
+  <pre class="prompt-preview">{{.Laya.ConfigCreatorPrompt}}</pre>
+</section>
+{{template "layout_end" .}}

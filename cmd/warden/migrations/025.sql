@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS warn_expire_after TEXT NOT NULL DEFAULT ''

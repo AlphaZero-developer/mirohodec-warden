@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS owners (
+			user_id BIGINT PRIMARY KEY,
+			log_chat_id BIGINT NOT NULL DEFAULT 0,
+			authenticated_at BIGINT NOT NULL DEFAULT 0
+		)

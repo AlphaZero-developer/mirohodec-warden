@@ -1,0 +1,12 @@
+.git
+.env
+.env.*
+!.env.example
+config.yaml
+data/
+photos/
+logs/
+.deploy/
+**/node_modules/
+coverage.out
+bin/

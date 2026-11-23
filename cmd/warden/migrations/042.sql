@@ -1,0 +1,1 @@
+ALTER TABLE moderation_records ADD COLUMN IF NOT EXISTS rehab_ward TEXT NOT NULL DEFAULT ''

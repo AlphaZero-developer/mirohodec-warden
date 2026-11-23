@@ -1,0 +1,17 @@
+services:
+  warden:
+    build: .
+    restart: unless-stopped
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in .env}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      WEB_ADMIN_TOKEN: ${WEB_ADMIN_TOKEN:-}
+      DATABASE_URL: ${DATABASE_URL:-}
+    volumes:
+      - warden-data:/app/data
+    # The panel is disabled by default. Publish via a TLS reverse proxy only.
+    # ports:
+    #   - "127.0.0.1:8090:8090"
+
+volumes:
+  warden-data:

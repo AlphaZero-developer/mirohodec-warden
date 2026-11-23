@@ -1,0 +1,140 @@
+{{template "layout_start" .}}
+<section class="stats-grid">
+  <article><span>В буфере</span><strong>{{.AILogs.Total}}</strong></article>
+  <article><span>Info</span><strong>{{.AILogs.Info}}</strong></article>
+  <article><span>Warn</span><strong>{{.AILogs.Warn}}</strong></article>
+  <article><span>Error</span><strong>{{.AILogs.Error}}</strong></article>
+  <article><span>Среднее время</span><strong>{{if .AILogs.AverageTime}}{{.AILogs.AverageTime}}{{else}}-{{end}}</strong></article>
+  <article><span>Последний цикл</span><strong>{{if .AILogs.LastEntry}}{{.AILogs.LastEntry}}{{else}}-{{end}}</strong></article>
+  <article><span>Лимит</span><strong>{{.AILogs.MaxEntries}}</strong></article>
+</section>
+
+<section class="panel ai-log-controls" data-ai-log-filter>
+  <div class="hero-panel">
+    <div>
+      <h2>Полный AI-цикл</h2>
+      <p class="muted">Вход пользователя, payload модели и ответ хранятся только в свежем web-буфере.</p>
+    </div>
+    <form method="post" action="/ai-logs/clear" data-confirm="Очистить AI-логи в web-панели?">
+      <button type="submit" class="secondary">Очистить</button>
+    </form>
+  </div>
+  <div class="ai-log-toolbar">
+    <label>Поиск
+      <input data-ai-log-search placeholder="пользователь, чат, prompt, ответ">
+    </label>
+    <label>Уровень
+      <select data-ai-log-level>
+        <option value="">Все</option>
+        <option value="info">Info</option>
+        <option value="warn">Warn</option>
+        <option value="error">Error</option>
+      </select>
+    </label>
+    <div class="ai-log-actions">
+      <button type="button" class="secondary" data-ai-log-expand="open">Раскрыть</button>
+      <button type="button" class="secondary" data-ai-log-expand="close">Свернуть</button>
+      <span class="filter-status" data-ai-log-count></span>
+    </div>
+  </div>
+</section>
+
+{{if .AILogs.Rows}}
+<section class="ai-log-feed">
+  {{range .AILogs.Rows}}
+  <article class="ai-log-card level-{{.Level}}" data-ai-log-card data-ai-log-level="{{.Level}}">
+    <details>
+      <summary class="ai-log-summary">
+        <span class="ai-log-main">
+          <span class="ai-log-title">#{{.ID}} · {{.Stage}}</span>
+          <span class="ai-log-meta">{{.At}} · {{.Elapsed}} · {{.Model}}</span>
+        </span>
+        <span class="ai-log-side">
+          <span class="badge {{.Level}}">{{.Level}}</span>
+          <span class="badge {{if .OK}}ok{{else}}warn{{end}}">{{if .OK}}OK{{else}}fallback{{end}}</span>
+          <span class="badge muted">{{.Source}}</span>
+        </span>
+      </summary>
+
+      <div class="ai-log-body">
+        <div class="ai-log-facts">
+          <span><strong>Пользователь</strong>{{.User}}{{if .Username}} · @{{.Username}}{{end}}</span>
+          <span><strong>Чат</strong>{{.Chat}}{{if .ChatType}} · {{.ChatType}}{{end}}</span>
+          {{if .ThreadID}}<span><strong>Topic</strong>{{.ThreadID}}</span>{{end}}
+          {{if .MessageID}}<span><strong>Message</strong>{{.MessageID}}</span>{{end}}
+          <span><strong>Размер</strong>{{.RequestChars}} → {{.ResponseChars}} chars</span>
+        </div>
+
+        <div class="ai-log-columns">
+          <section class="ai-log-block">
+            <div class="ai-log-block-head">
+              <h3>Что отправил пользователь</h3>
+              <button type="button" class="secondary" data-copy-target="ai-log-user-{{.ID}}">Копировать</button>
+            </div>
+            <pre id="ai-log-user-{{.ID}}" class="ai-log-pre">{{if .UserInput}}{{.UserInput}}{{else}}-{{end}}</pre>
+          </section>
+
+          <section class="ai-log-block">
+            <div class="ai-log-block-head">
+              <h3>Что ответила нейросеть</h3>
+              <button type="button" class="secondary" data-copy-target="ai-log-reply-{{.ID}}">Копировать</button>
+            </div>
+            <pre id="ai-log-reply-{{.ID}}" class="ai-log-pre">{{if .RawReply}}{{.RawReply}}{{else if .FinalReply}}{{.FinalReply}}{{else}}-{{end}}</pre>
+            {{if and .FinalReply (ne .FinalReply .RawReply)}}
+            <small>Итог после обработки/fallback</small>
+            <pre class="ai-log-pre compact">{{.FinalReply}}</pre>
+            {{end}}
+          </section>
+        </div>
+
+        <section class="ai-log-block ai-log-payload" id="ai-log-payload-{{.ID}}">
+          <div class="ai-log-block-head">
+            <h3>Что пришло нейросети</h3>
+            <button type="button" class="secondary" data-copy-target="ai-log-payload-body-{{.ID}}">Копировать payload</button>
+          </div>
+          <div id="ai-log-payload-body-{{.ID}}" class="ai-log-payload-body">
+            <div class="ai-log-request-meta">
+              <code>{{.BaseURL}}</code>
+              <code>{{.MaxTokens}} tokens</code>
+              <code>{{.MaxReplyChars}} chars</code>
+            </div>
+            <details class="ai-log-system">
+              <summary>System prompt</summary>
+              <pre class="ai-log-pre">{{if .SystemPrompt}}{{.SystemPrompt}}{{else}}-{{end}}</pre>
+            </details>
+            {{if .Messages}}
+            <div class="ai-log-messages">
+              {{range .Messages}}
+              <div class="ai-log-message">
+                <div class="ai-log-message-head">
+                  <span class="badge muted">{{.Role}}</span>
+                  <small>{{.Chars}} chars</small>
+                </div>
+                <pre class="ai-log-pre">{{.Content}}</pre>
+              </div>
+              {{end}}
+            </div>
+            {{else}}
+            <p class="muted">Messages пустые.</p>
+            {{end}}
+          </div>
+        </section>
+
+        {{if .Error}}
+        <section class="ai-log-block">
+          <h3>Ошибка</h3>
+          <pre class="ai-log-pre">{{.Error}}</pre>
+        </section>
+        {{end}}
+      </div>
+    </details>
+  </article>
+  {{end}}
+</section>
+{{else}}
+<section class="panel empty-state">
+  <h2>AI-логов пока нет</h2>
+  <p class="muted">После следующего обращения к нейросети здесь появится полный цикл.</p>
+</section>
+{{end}}
+{{template "layout_end" .}}

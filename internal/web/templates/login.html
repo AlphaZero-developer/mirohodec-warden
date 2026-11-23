@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}}</title>
+  <script>{{themeBootScript}}</script>
+  <style>{{inlineCSS}}</style>
+  <script defer src="/static/panel.js"></script>
+</head>
+<body>
+  <button type="button" class="theme-toggle login-theme-toggle secondary" data-theme-toggle title="Переключить тему">Тема</button>
+  <main class="login-shell">
+    <section class="login-panel">
+      <h1>Laya Panel</h1>
+      {{if .Error}}<p class="notice error">{{.Error}}</p>{{end}}
+      <form method="post" action="/login" class="login-form">
+        <label for="token">Admin token</label>
+        <input id="token" name="token" type="password" autocomplete="current-password" autofocus required>
+        <button type="submit">Войти</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

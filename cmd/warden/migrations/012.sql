@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS quotes (
+			id TEXT PRIMARY KEY,
+			text TEXT NOT NULL,
+			author TEXT NOT NULL DEFAULT '',
+			tags TEXT[] NOT NULL DEFAULT '{}',
+			added_by_id BIGINT NOT NULL DEFAULT 0,
+			added_by_name TEXT NOT NULL DEFAULT '',
+			added_at_unix BIGINT NOT NULL DEFAULT 0,
+			uses BIGINT NOT NULL DEFAULT 0,
+			last_used_unix BIGINT NOT NULL DEFAULT 0
+		)

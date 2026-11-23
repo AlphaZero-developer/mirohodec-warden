@@ -1,0 +1,143 @@
+{{template "layout_start" .}}
+<section class="panel hero-panel">
+  <div>
+    <h2>Внешний вид</h2>
+    <p class="muted">Настройки применяются в этом браузере и не меняют bot config.</p>
+  </div>
+  <div class="top-actions">
+    <button type="button" class="secondary" data-panel-settings-reset>Сбросить</button>
+    <button type="button" data-panel-settings-apply>Применить</button>
+  </div>
+</section>
+
+<section class="settings-page" data-panel-settings>
+  <section class="panel">
+    <h2>Фон и стекло</h2>
+    <div class="form-grid">
+      <label>Фон
+        <select data-panel-setting="backgroundPreset">
+          <option value="clean">Clean</option>
+          <option value="aurora">Aurora</option>
+          <option value="nebula">Nebula</option>
+          <option value="frost">Frost</option>
+          <option value="image">Image URL</option>
+        </select>
+      </label>
+      <label>Background image URL
+        <input data-panel-setting="backgroundImage" placeholder="https://example.com/background.jpg">
+      </label>
+      <label>Размытие фона
+        <select data-panel-setting="backgroundBlur">
+          <option value="0px">0px</option>
+          <option value="4px">4px</option>
+          <option value="10px">10px</option>
+          <option value="18px">18px</option>
+          <option value="28px">28px</option>
+        </select>
+      </label>
+      <label>Прозрачность панелей
+        <select data-panel-setting="surfaceOpacity">
+          <option value="100%">100%</option>
+          <option value="94%">94%</option>
+          <option value="88%">88%</option>
+          <option value="78%">78%</option>
+          <option value="66%">66%</option>
+        </select>
+      </label>
+      <label>Blur панелей
+        <select data-panel-setting="surfaceBlur">
+          <option value="0px">0px</option>
+          <option value="8px">8px</option>
+          <option value="16px">16px</option>
+          <option value="24px">24px</option>
+        </select>
+      </label>
+      <label>Правая панель
+        <select data-panel-setting="rightPanel">
+          <option value="hover">По наведению</option>
+          <option value="pinned">Закреплена</option>
+          <option value="off">Выключена</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Переходы</h2>
+    <div class="form-grid">
+      <label>Анимация страниц
+        <select data-panel-setting="transition">
+          <option value="fade">Fade</option>
+          <option value="slide-left">Slide left</option>
+          <option value="slide-right">Slide right</option>
+          <option value="slide-up">Slide up</option>
+          <option value="slide-down">Slide down</option>
+          <option value="zoom">Zoom</option>
+          <option value="scale-soft">Scale soft</option>
+          <option value="flip">Flip</option>
+          <option value="blur">Blur</option>
+          <option value="rotate">Rotate</option>
+          <option value="diagonal">Diagonal</option>
+          <option value="none">Без анимации</option>
+        </select>
+      </label>
+      <label>Скорость
+        <select data-panel-setting="motionSpeed">
+          <option value="fast">Быстро</option>
+          <option value="normal">Нормально</option>
+          <option value="slow">Медленно</option>
+        </select>
+      </label>
+      <label>Hot reload
+        <select data-panel-setting="hotReload">
+          <option value="on">Сразу применять</option>
+          <option value="off">Только по кнопке</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Шрифт</h2>
+    <div class="form-grid">
+      <label>Font family
+        <input data-panel-setting="fontFamily" placeholder='Inter, "Segoe UI", sans-serif'>
+      </label>
+      <label>Font CSS URL
+        <input data-panel-setting="fontUrl" placeholder="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900">
+      </label>
+      <label>Размер интерфейса
+        <select data-panel-setting="fontScale">
+          <option value="compact">Компактный</option>
+          <option value="normal">Обычный</option>
+          <option value="large">Крупный</option>
+        </select>
+      </label>
+    </div>
+    <p class="prompt-preview panel-preview">Лайя смотрит на панель, панель смотрит обратно. 1234567890</p>
+  </section>
+
+  <section class="panel">
+    <h2>Цветовая гамма</h2>
+    <div class="color-grid">
+      <label>Background<input data-panel-color="--bg"></label>
+      <label>Surface<input data-panel-color="--surface"></label>
+      <label>Surface soft<input data-panel-color="--surface-soft"></label>
+      <label>Surface strong<input data-panel-color="--surface-strong"></label>
+      <label>Text<input data-panel-color="--text"></label>
+      <label>Muted<input data-panel-color="--muted"></label>
+      <label>Line<input data-panel-color="--line"></label>
+      <label>Line soft<input data-panel-color="--line-soft"></label>
+      <label>Accent<input data-panel-color="--accent"></label>
+      <label>Accent strong<input data-panel-color="--accent-strong"></label>
+      <label>Accent soft<input data-panel-color="--accent-soft"></label>
+      <label>Info<input data-panel-color="--info"></label>
+      <label>Info soft<input data-panel-color="--info-soft"></label>
+      <label>Danger<input data-panel-color="--danger"></label>
+      <label>Danger soft<input data-panel-color="--danger-soft"></label>
+      <label>Warning<input data-panel-color="--warning"></label>
+      <label>Warning soft<input data-panel-color="--warning-soft"></label>
+    </div>
+  </section>
+</section>
+{{template "layout_end" .}}

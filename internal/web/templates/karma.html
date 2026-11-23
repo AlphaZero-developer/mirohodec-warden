@@ -1,0 +1,24 @@
+{{template "layout_start" .}}
+{{template "chat_selector" .}}
+<section class="panel">
+  <div class="table-head">
+    <h2>Топ кармы</h2>
+    <input data-filter="[data-karma-row]" placeholder="Поиск">
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Пользователь</th><th>Карма</th><th>Обновлено</th></tr></thead>
+    <tbody>
+      {{range .Karma}}
+      <tr data-karma-row class="searchable">
+        <td>{{.Rank}}</td>
+        <td>{{.DisplayName}}{{if .Username}}<br><small>@{{.Username}}</small>{{end}}<br><small>{{.UserID}}</small></td>
+        <td><strong>{{.Score}}</strong></td>
+        <td>{{.Updated}}</td>
+      </tr>
+      {{else}}
+      <tr><td colspan="4" class="empty">Кармы пока нет.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+{{template "layout_end" .}}

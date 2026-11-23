@@ -1,0 +1,1 @@
+ALTER TABLE managed_chats ADD COLUMN IF NOT EXISTS warn_rehab_threshold INTEGER NOT NULL DEFAULT 0

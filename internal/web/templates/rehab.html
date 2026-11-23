@@ -1,0 +1,115 @@
+{{template "layout_start" .}}
+{{template "chat_selector" .}}
+
+<section class="panel">
+  <h2>Отправить в психиатрический центр</h2>
+  {{if .Rehab.RehabTopicID}}
+  <p class="muted">Тема психиатрического центра: {{.Rehab.RehabTopicID}}</p>
+  <form class="form-grid" method="post" action="/rehab/add">
+    <input type="hidden" name="chat_id" value="{{.Chats.CurrentID}}">
+    <label>User ID<input name="user_id" list="known-users" required></label>
+    <datalist id="known-users">{{range .Rehab.Users}}<option value="{{.ID}}">{{.Label}}</option>{{end}}</datalist>
+    <label>Duration<input name="duration" placeholder="3d / 2h / forever"></label>
+    <label>Причина<input name="reason" placeholder="Причина"></label>
+    <button type="submit">Отправить</button>
+  </form>
+  {{else}}
+  <p class="notice error">Для выбранной группы не настроена тема психиатрического центра.</p>
+  {{end}}
+</section>
+
+<section class="panel">
+  <div class="hero-panel">
+    <div>
+      <h2>Промывка в психиатрическом центре</h2>
+      <p class="muted">Когда включено, Лайя отвечает этими строками вместо фото, цитат и обычных реплик центра.</p>
+    </div>
+    {{if .Rehab.Brainwash.Updated}}<span class="badge ok">updated {{.Rehab.Brainwash.Updated}}</span>{{else}}<span class="badge muted">config/default</span>{{end}}
+  </div>
+  <form class="editor" method="post" action="/rehab/brainwash">
+    <input type="hidden" name="chat_id" value="{{.Chats.CurrentID}}">
+    <label class="check"><input type="checkbox" name="enabled" {{if .Rehab.Brainwash.Enabled}}checked{{end}}> Включить промывку</label>
+    <label class="check"><input type="checkbox" name="ai_enabled" {{if .Rehab.Brainwash.AIEnabled}}checked{{end}}> Генерировать свежие фразы через AI</label>
+    <div class="form-grid">
+      <label>ID главного
+        <input name="leader_user_id" inputmode="numeric" value="{{optionalInt64 .Rehab.Brainwash.LeaderUserID}}" placeholder="0">
+      </label>
+      <label>Имя главного
+        <input name="leader_name" value="{{.Rehab.Brainwash.LeaderName}}" placeholder="Руслан">
+      </label>
+    </div>
+    <label>AI-промпт промывки
+      <textarea name="ai_prompt" rows="5" placeholder="Как Лайя должна генерировать новые фразы. Плейсхолдеры: {leader}, {leader_id}, {user}, {user_id}.">{{.Rehab.Brainwash.AIPrompt}}</textarea>
+    </label>
+    <label>Что пишет Лайя
+      <textarea name="messages" rows="10" placeholder="Одна непустая строка = один возможный ответ. Плейсхолдеры: {leader}, {leader_id}, {user}, {user_id}.">{{.Rehab.Brainwash.Messages}}</textarea>
+    </label>
+    <div class="actions">
+      <button type="submit">Сохранить режим</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="hero-panel">
+    <div>
+      <h2>Экзамен перед выходом</h2>
+      <p class="muted">Одна строка = один билет: вопрос | правильный ответ. При выходе Лайя задаёт случайный вопрос, а AI строго проверяет ответ.</p>
+    </div>
+    {{if .Rehab.Exam.Updated}}<span class="badge ok">updated {{.Rehab.Exam.Updated}}</span>{{else}}<span class="badge muted">config/default</span>{{end}}
+  </div>
+  <form class="editor" method="post" action="/rehab/exam">
+    <input type="hidden" name="chat_id" value="{{.Chats.CurrentID}}">
+    <label>Где действует экзамен
+      <select name="scope">
+        <option value="global" {{if ne .Rehab.Exam.Scope "group"}}selected{{end}}>Один общий экзамен для всех групп</option>
+        <option value="group" {{if eq .Rehab.Exam.Scope "group"}}selected{{end}}>Отдельный экзамен для этой группы</option>
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" name="enabled" {{if .Rehab.Exam.Enabled}}checked{{end}}> Включить экзамен перед выходом</label>
+    <div class="form-grid">
+      <label>Окно ответа
+        <input name="answer_window" value="{{.Rehab.Exam.AnswerWindow}}" placeholder="10m">
+      </label>
+      <label>Срок при провале
+        <input name="fail_duration" value="{{.Rehab.Exam.FailDuration}}" placeholder="24h">
+      </label>
+    </div>
+    <label>Вопросы и правильные ответы
+      <textarea name="questions" rows="8" placeholder="Почему тебя можно выпускать? | Я понял правила и буду нормально общаться.">{{.Rehab.Exam.Questions}}</textarea>
+    </label>
+    <div class="actions">
+      <button type="submit">Сохранить экзамен</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="table-head">
+    <h2>В психиатрическом центре</h2>
+    <input data-filter="[data-rehab-row]" placeholder="Поиск">
+  </div>
+  <table>
+    <thead><tr><th>Пользователь</th><th>Причина</th><th>Выход</th><th>Админ</th><th></th></tr></thead>
+    <tbody>
+      {{range .Rehab.Rows}}
+      <tr data-rehab-row class="searchable">
+        <td>{{.DisplayName}}<br><small>{{.UserID}}</small></td>
+        <td>{{.Reason}}</td>
+        <td>{{.Until}}</td>
+        <td>{{.By}}</td>
+        <td>
+          <form method="post" action="/rehab/release">
+            <input type="hidden" name="chat_id" value="{{$.Chats.CurrentID}}">
+            <input type="hidden" name="user_id" value="{{.UserID}}">
+            <button type="submit" class="secondary">Выпустить</button>
+          </form>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="5" class="empty">Активных записей нет.</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</section>
+{{template "layout_end" .}}

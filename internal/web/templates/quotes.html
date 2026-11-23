@@ -1,0 +1,41 @@
+{{template "layout_start" .}}
+<section class="panel">
+  <div class="toolbar">
+    <input data-filter="[data-quote-card]" placeholder="Поиск цитат">
+    <button type="button" class="secondary" data-random="[data-quote-card]">Случайная</button>
+  </div>
+  <form class="stack editor" method="post" action="/quotes/add" data-editor="quote">
+    <label>Цитата<textarea name="text" placeholder="Текст цитаты"></textarea></label>
+    <label>Автор<input name="author" placeholder="Автор"></label>
+    <label>Теги<input name="tags" placeholder="tag1,tag2"></label>
+    <div class="preview"></div>
+    <p class="dupe muted"></p>
+    <button type="submit">Добавить цитату</button>
+  </form>
+</section>
+
+<section class="cards">
+  {{range .Quotes}}
+  <article class="item-card searchable" data-quote-card data-id="{{.ID}}" data-value="{{.Text}}">
+    <header><div><h2>{{.ID}}</h2><p>uses {{.Uses}}</p></div></header>
+    <form id="quote-{{.ID}}" class="stack editor" method="post" action="/quotes/update" data-editor="quote">
+      <input name="id" value="{{.ID}}" readonly>
+      <label>Цитата<textarea name="text">{{.Text}}</textarea></label>
+      <label>Автор<input name="author" value="{{.Author}}"></label>
+      <label>Теги<input name="tags" value="{{.TagsText}}"></label>
+      <div class="preview">{{.Text}}{{if .Author}}<br><small>{{.Author}}</small>{{end}}</div>
+      <p class="dupe muted"></p>
+    </form>
+    <div class="actions">
+      <button form="quote-{{.ID}}" type="submit">Сохранить</button>
+      <form method="post" action="/quotes/delete" data-confirm="Удалить цитату?">
+        <input type="hidden" name="id" value="{{.ID}}">
+        <button type="submit" class="danger">Удалить</button>
+      </form>
+    </div>
+  </article>
+  {{else}}
+  <p class="empty">Цитат пока нет.</p>
+  {{end}}
+</section>
+{{template "layout_end" .}}
